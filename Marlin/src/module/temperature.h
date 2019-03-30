@@ -420,7 +420,7 @@ class Temperature {
         static uint8_t paused_fan_speed[FAN_COUNT];
       #endif
 
-      static constexpr inline uint8_t fanPercent(const uint8_t speed) { return (int(speed) * 100 + 127) / 255; }
+      static constexpr inline uint8_t fanPercent(const uint8_t speed) { return ui8_to_percent(speed); }
 
       #if ENABLED(ADAPTIVE_FAN_SLOWING)
         static uint8_t fan_speed_scaler[FAN_COUNT];
@@ -622,7 +622,7 @@ class Temperature {
         #endif
         temp_bed.target =
           #ifdef BED_MAXTEMP
-            MIN(celsius, BED_MAXTEMP - 15)
+            MIN(celsius, BED_MAXTEMP - 10)
           #else
             celsius
           #endif
@@ -642,10 +642,10 @@ class Temperature {
       #if ENABLED(SHOW_TEMP_ADC_VALUES)
         FORCE_INLINE static int16_t rawChamberTemp() { return temp_chamber.raw; }
       #endif
-      FORCE_INLINE static float degChamber() { return temp_chambercurrent; }
+      FORCE_INLINE static float degChamber() { return temp_chamber.current; }
       #if HAS_HEATED_CHAMBER
-        FORCE_INLINE static bool isHeatingChamber()     { return temp_chamber.target > temp_chambercurrent; }
-        FORCE_INLINE static bool isCoolingChamber()     { return temp_chamber.target < temp_chambercurrent; }
+        FORCE_INLINE static bool isHeatingChamber()     { return temp_chamber.target > temp_chamber.current; }
+        FORCE_INLINE static bool isCoolingChamber()     { return temp_chamber.target < temp_chamber.current; }
         FORCE_INLINE static int16_t degTargetChamber() {return temp_chamber.target; }
       #endif
     #endif // HAS_TEMP_CHAMBER
@@ -729,23 +729,17 @@ class Temperature {
       #endif
     #endif
 
-    #if ENABLED(ULTRA_LCD) || ENABLED(EXTENSIBLE_UI)
+    #if EITHER(ULTRA_LCD, EXTENSIBLE_UI)
       static void set_heating_message(const uint8_t e);
     #endif
 
   private:
-
-    #if ENABLED(FAST_PWM_FAN)
-      static void setPwmFrequency(const pin_t pin, int val);
-    #endif
-
     static void set_current_temp_raw();
-
     static void updateTemperaturesFromRawValues();
 
-    #define HAS_MAX6675 (ENABLED(HEATER_0_USES_MAX6675) || ENABLED(HEATER_1_USES_MAX6675))
+    #define HAS_MAX6675 EITHER(HEATER_0_USES_MAX6675, HEATER_1_USES_MAX6675)
     #if HAS_MAX6675
-      #if ENABLED(HEATER_0_USES_MAX6675) && ENABLED(HEATER_1_USES_MAX6675)
+      #if BOTH(HEATER_0_USES_MAX6675, HEATER_1_USES_MAX6675)
         #define COUNT_6675 2
       #else
         #define COUNT_6675 1
