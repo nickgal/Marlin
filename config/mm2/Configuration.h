@@ -1337,8 +1337,8 @@
 #define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
-  #define Z_SAFE_HOMING_X_POINT 3
-  #define Z_SAFE_HOMING_Y_POINT 50
+  #define Z_SAFE_HOMING_X_POINT 110
+  #define Z_SAFE_HOMING_Y_POINT 10
   // #define Z_SAFE_HOMING_X_POINT ((X_BED_SIZE) / 2)    // X point for Z homing when homing all axes (G28).
   // #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
 #endif
