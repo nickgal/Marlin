@@ -506,7 +506,7 @@ static bool udd_ep_interrupt(void);
 //@}
 
 
-//--------------------------------------------------------
+// ------------------------
 //--- INTERNAL ROUTINES TO MANAGED GLOBAL EVENTS
 
 /**
@@ -1307,7 +1307,7 @@ void udd_test_mode_packet(void)
 
 
 
-//--------------------------------------------------------
+// ------------------------
 //--- INTERNAL ROUTINES TO MANAGED THE CONTROL ENDPOINT
 
 static void udd_reset_ep_ctrl(void)
@@ -1479,7 +1479,7 @@ static void udd_ctrl_in_sent(void)
 	// The IN data don't must be written in endpoint 0 DPRAM during
 	// a next setup reception in same endpoint 0 DPRAM.
 	// Thereby, an OUT ZLP reception must check before IN data write
-	// and if no OUT ZLP is recevied the data must be written quickly (800us)
+	// and if no OUT ZLP is received the data must be written quickly (800µs)
 	// before an eventually ZLP OUT and SETUP reception
 	flags = cpu_irq_save();
 	if (Is_udd_out_received(0)) {
@@ -1729,7 +1729,7 @@ static bool udd_ctrl_interrupt(void)
 }
 
 
-//--------------------------------------------------------
+// ------------------------
 //--- INTERNAL ROUTINES TO MANAGED THE BULK/INTERRUPT/ISOCHRONOUS ENDPOINTS
 
 #if (0 != USB_DEVICE_MAX_EP)

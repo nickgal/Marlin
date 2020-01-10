@@ -31,12 +31,18 @@
   #error "MKS Robin mini supports up to 1 hotends / E-steppers. Comment out this line to continue."
 #endif
 
-#define BOARD_NAME "MKS Robin mini"
+#define BOARD_INFO_NAME "MKS Robin mini"
 
 //
 // Release PB4 (Y_ENABLE_PIN) from JTAG NRST role
 //
 #define DISABLE_DEBUG
+
+#define FLASH_EEPROM_EMULATION
+// 2K in a AT24C16N
+#define EEPROM_PAGE_SIZE	(uint16)0x800 // 2048
+#define EEPROM_START_ADDRESS	((uint32)(0x8000000 + 512 * 1024 - 2 * EEPROM_PAGE_SIZE))
+#define E2END (EEPROM_PAGE_SIZE - 1)
 
 //
 // Note: MKS Robin mini board is using SPI2 interface.
@@ -46,15 +52,13 @@
 //
 // Limit Switches
 //
-#define X_MIN_PIN          PA15
-#define X_MAX_PIN          PA15
-#define Y_MIN_PIN          PA12
-#define Y_MAX_PIN          PA12
+#define X_STOP_PIN         PA15
+#define Y_STOP_PIN         PA12
 #define Z_MIN_PIN          PA11
 #define Z_MAX_PIN          PC4
 
 #ifndef FIL_RUNOUT_PIN
-  #define FIL_RUNOUT_PIN   PF11  // MT_DET
+  #define FIL_RUNOUT_PIN   PA4  // MT_DET
 #endif
 
 //
@@ -115,17 +119,20 @@
  * If the screen stays white, disable 'LCD_RESET_PIN'
  * to let the bootloader init the screen.
  */
-#if ENABLED(MKS_ROBIN_TFT)
-  #define LCD_RESET_PIN    PF6
+#if ENABLED(FSMC_GRAPHICAL_TFT)
+  #define FSMC_CS_PIN      PD7    // NE4
+  #define FSMC_RS_PIN      PD11   // A0
+
+  #define LCD_RESET_PIN    PC6
   #define NO_LCD_REINIT           // Suppress LCD re-initialization
 
   #define LCD_BACKLIGHT_PIN PD13
 
   #if ENABLED(TOUCH_BUTTONS)
-    #define BTN_ENC        PB3    // Not connected. TODO: Replace this hack to enable button code
-    #define FSMC_CS_PIN    PD7    // NE4
-    #define FSMC_RS_PIN    PD11   // A0
     #define TOUCH_CS_PIN   PC2
+    #define TOUCH_SCK_PIN  PB13
+    #define TOUCH_MOSI_PIN PB15
+    #define TOUCH_MISO_PIN PB14
   #endif
 #endif
 
@@ -133,7 +140,7 @@
 #define MOTOR_CURRENT_PWM_XY_PIN   PA6
 #define MOTOR_CURRENT_PWM_Z_PIN    PA7
 #define MOTOR_CURRENT_PWM_E_PIN    PB0
-#define MOTOR_CURRENT_PWM_RANGE    65535 // (255 * (1000mA / 65535)) * 257 = 1000 is equal 1.6v Vref in turn equal 1Amp
+#define MOTOR_CURRENT_PWM_RANGE    1500 // (255 * (1000mA / 65535)) * 257 = 1000 is equal 1.6v Vref in turn equal 1Amp
 #define DEFAULT_PWM_MOTOR_CURRENT  { 1030, 1030, 1030 } // 1.05Amp per driver, here is XY, Z and E. This values determined empirically.
 
 // This is a kind of workaround in case native marlin "digipot" interface won't work.

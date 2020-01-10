@@ -48,20 +48,17 @@ void GcodeSuite::M28() {
 
     // Binary transfer mode
     if ((card.flag.binary_mode = binary_mode)) {
-      SERIAL_ECHO_START();
-      SERIAL_ECHO(" preparing to receive: ");
-      SERIAL_ECHOLN(p);
-      card.openFile(p, false);
+      SERIAL_ECHO_MSG("Switching to Binary Protocol");
       #if NUM_SERIAL > 1
         card.transfer_port_index = queue.port[queue.index_r];
       #endif
     }
     else
-      card.openFile(p, false);
+      card.openFileWrite(p);
 
   #else
 
-    card.openFile(parser.string_arg, false);
+    card.openFileWrite(parser.string_arg);
 
   #endif
 }
